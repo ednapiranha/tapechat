@@ -6,5 +6,6 @@ Requires:
 - web.py 
 - Redis 1.02
 - redis-py
+- AutoTagify
 
 This is still in development, so more updates will be coming soon.
