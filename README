@@ -1,0 +1,10 @@
+Tapechat Beta
+
+Tapechat is a small web.py app that takes RSS feeds and tagifies words in each RSS entry.
+
+Requires:
+- web.py 
+- Redis 1.02
+- redis-py
+
+This is still in development, so more updates will be coming soon.
