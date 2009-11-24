@@ -1,0 +1,17 @@
+$def with (entries,tag_name,user_id)
+<p><a href="/">Tape Chat</a></p>
+<ul>
+$if user_id < 1:
+  <li><a href="/login">Login</a></li>
+  <li><a href="/user/new">Sign up</a></li>
+$else:  
+  <li><a href="/feed/new">Add new Feed</a></li>
+  <li><a href="/logout">Logout</a></li>
+</ul>
+<h1>Tag: $:tag_name</h1>
+<ul class="messages">
+$if entries:
+  $:entries
+$else:
+  <li>You have no feeds yet.</li>
+</ul>

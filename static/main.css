@@ -1,0 +1,49 @@
+body {
+	padding: 20px;
+	font-family: Helvetica, Arial, sans-serif;
+}
+
+h1 {
+	font-size: 3em;
+	color: #f49b1c;
+	padding: 20px;
+}
+
+li {
+	list-style-type: none;
+	float: left;
+	position: relative;
+	margin: 5px;
+	letter-spacing: .06em;
+	word-spacing: .2em;
+	line-height: 1.5em;
+	padding: .5em;
+	margin-bottom: 5px;
+	background-color: #eee;
+	font-size: .8em;
+}
+
+ul.messages li {
+	clear: both;
+}
+
+li span {
+	display: block;
+}
+
+a {
+	text-decoration: none;
+	border-bottom: 3px solid #fff;
+	color: #444;
+	font-weight: bold;
+}
+
+a:hover {
+	border-bottom: 3px solid #333;
+	background-color: #06f8ef;
+	color: #000;
+}
+
+p#more_tags {
+	clear: both;
+}

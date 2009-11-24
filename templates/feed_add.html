@@ -1,0 +1,9 @@
+$def with (error_message)
+
+<h1>Add New Feed</h1>
+$if error_message:
+  <p>$error_message</p>
+<form method="post" action="/feed/new">
+  url: <input type="text" name="url" value="" /><br />
+  <input type="submit" value="submit" />
+</form>

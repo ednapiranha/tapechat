@@ -1,0 +1,10 @@
+$def with (error_message)
+
+<h1>Sign up</h1>
+$if error_message:
+  <p>$error_message</p>
+<form method="post" action="/user/new">
+  email: <input type="text" name="email" value="" /><br />
+  password: <input type="password" name="password" value="" /><br />
+  <input type="submit" value="submit" /> or <a href="/login">Login</a>
+</form>
