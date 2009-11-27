@@ -48,4 +48,4 @@ for feed_id in feeds:
           tapechat_tag.add(tag_word,feed_id)
         r.push("uid:" + str(r.get("fid:" + str(feed_id) + ":uid")) + ":" + tag_word + ":texts",text_id)
         r.push("word:" + str(tag_word) + ":texts",text_id)
-  r.save()
+r.save()

@@ -61,11 +61,11 @@ class tags:
 
 class delete:
   def GET(self,tag_word,text_id):
-    try:
-      r.delete("text:" + str(text_id))
-      r.save()
-      raise web.seeother('/tags/' + tag_word)
-    except: raise web.seeother('/')
+    # try:
+    chat_tag = TapeChatTag()
+    chat_tag.delete_text(tag_word,text_id)
+    raise web.seeother('/tags/' + tag_word)
+    # except: raise web.seeother('/')
 
 # feeds
 class feed_add:

@@ -3,7 +3,6 @@
 Tapechat is a small web.py app that takes RSS feeds and tagifies words in each RSS entry.
 
 ## Requires:
-
 * [Python 2.6+](http://www.python.org/ "Python")
 * [web.py](http://webpy.org/ "web.py")
 * [Redis 1.02](http://code.google.com/p/redis/ "Redis")

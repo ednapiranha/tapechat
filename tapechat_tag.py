@@ -18,7 +18,7 @@ class TapeChatTag():
     self.next_page = 1
     self.prev_page = 0
     self.page_value = 0
-    self.start_pos = 1
+    self.start_pos = 0
     self.text_entries = ''
     
   def generate(self):
@@ -33,21 +33,22 @@ class TapeChatTag():
     except: pass
 
     try:
-      for tag_word in set(r.sort("uid:" + str(web.config.session_parameters['user_id']) + ":tags",by="tid:*:word",get="tid:*:word",alpha=True)):
-        # try:
-        tag_count = r.llen("word:" + str(tag_word) + ":texts")
-        font_size = math.log(tag_count * 100, math.e) * 3
-        self.all_entries += '<li><a href="' + tag.link + '/' + tag_word +'" style="font-size: ' + str(font_size) + 'px;">' + urllib.unquote(tag_word) + ' (' + str(tag_count)  +')</a></li>'
-        # except: self.page_value = 1
+      for tag_id in r.lrange("uid:" + str(web.config.session_parameters['user_id']) + ":tags",self.start_pos,100 * (self.next_page + 1)):
+        tag_word = r.get("tid:" + str(tag_id) + ":word")
+        try:
+          tag_count = r.llen("word:" + str(tag_word) + ":texts")
+          font_size = math.log(tag_count * 100, math.e) * 3
+          self.all_entries += '<li><a href="' + tag.link + '/' + tag_word +'" style="font-size: ' + str(font_size) + 'px;">' + urllib.unquote(tag_word) + ' (' + str(tag_count)  +')</a></li>'
+        except: self.page_value = 1
     except:
       pass
 
   def tag_text(self,tag_word):
     self.text_entries = ''
-    try:
-      for text_id in set(r.lrange("uid:" + str(web.config.session_parameters['user_id']) + ":" + tag_word + ":texts",0,100)):
-        self.text_entries += '<li>' + urllib.unquote(r.get("text:" + str(text_id))) + ' <a href="/delete/' + tag_word + '/' + str(text_id) + '">delete</a></li>'
-    except: self.text_entries = '<li>No such tag found</li>'
+    # try:
+    for text_id in r.lrange("uid:" + str(web.config.session_parameters['user_id']) + ":" + tag_word + ":texts",0,100):
+      self.text_entries += '<li>' + urllib.unquote(r.get("text:" + str(text_id))) + ' <a href="/delete/' + tag_word + '/' + str(text_id) + '">delete</a></li>'
+    # except: self.text_entries = '<li>No such tag found</li>'
     return self.text_entries
 
   def add(self,tag_word,feed_id):
@@ -59,6 +60,12 @@ class TapeChatTag():
       r.set("uid:" + str(r.get("fid:" + str(feed_id) + ":tid")),tag_id)
     if not r.exists("uid:" + str(r.get("fid:" + str(feed_id) + ":uid")) + ":tid"):
       r.push("uid:" + str(r.get("fid:" + str(feed_id) + ":uid")) + ":tags",tag_id)
+
+  def delete_text(self,tag_word,text_id):
+    r.delete("text:" + str(text_id))
+    r.lrem("word:" + str(tag_word) + ":texts",text_id)
+    r.lrem("uid:" + str(web.config.session_parameters['user_id']) + ":" + str(tag_word) + ":texts",text_id)
+    r.save()
 
   def _format_time(self,time):
     if int(time) < 10:
