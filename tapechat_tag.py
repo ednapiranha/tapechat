@@ -41,7 +41,10 @@ class TapeChatTag():
       for tag_id in tag_list:
         tag_word = r.get("tid:" + str(tag_id) + ":word")
         try:
-          tag_count = r.llen("word:" + str(tag_word) + ":texts")
+          if user_id < 1:
+            tag_count = r.llen("word:" + str(tag_word) + ":texts")
+          else:
+            tag_count = r.llen("uid:" + str(web.config.session_parameters['user_id']) + ":" + tag_word + ":texts")
           font_size = math.log(tag_count * 100, math.e) * 3
           self.all_entries += '<li><a href="' + tag.link + '/' + tag_word +'" style="font-size: ' + str(font_size) + 'px;">' + urllib.unquote(tag_word) + ' (' + str(tag_count)  +')</a></li>'
         except: self.page_value = 1
@@ -64,6 +67,7 @@ class TapeChatTag():
       tag_id = r.incr("global:nextTagId")
       user_id = r.get("fid:" + str(feed_id) + ":uid")
       r.set("tid:" + str(tag_id) + ":word",clean_quotes.sub('',(urllib.quote(clean_word.sub('',tag_word)))))
+      r.set("word:" + tag_word + ":tid", tag_id)
       r.push("global:tags",tag_id)
       r.set("uid:" + str(r.get("fid:" + str(feed_id) + ":tid")),tag_id)
     if not r.exists("uid:" + str(r.get("fid:" + str(feed_id) + ":uid")) + ":tid"):
