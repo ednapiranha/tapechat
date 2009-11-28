@@ -9,6 +9,7 @@ Tapechat is a small web.py app that takes RSS feeds and tagifies words in each R
 * [redis-py](http://github.com/andymccurdy/redis-py "redis-py")
 * [BeautifulSoup](http://pypi.python.org/pypi/BeautifulSoup/ "Beautiful Soup") (pip install BeautifulSoup)
 * [auto_tagify](http://pypi.python.org/pypi?:action=display&name=auto_tagify "auto_tagify") (easy_install auto_tagify or pip install auto_tagify
+* [feedparser](http://http://feedparser.org/ "feedparser")
 
 
 ## How to use:
