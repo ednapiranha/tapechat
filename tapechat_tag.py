@@ -71,7 +71,7 @@ class TapeChatTag():
     r.save()
 
   def delete_text(self,tag_word,text_id):
-    if web.config.session_parameters['user_id'] and r.get("text:" + str(text_id) + "uid") == web.config.session_parameters['user_id']:
+    if web.config.session_parameters['user_id'] and r.get("text:" + str(text_id) + ":uid") == web.config.session_parameters['user_id']:
       r.delete("text:" + str(text_id))
       r.lrem("word:" + str(tag_word) + ":texts",text_id)
       r.lrem("uid:" + str(web.config.session_parameters['user_id']) + ":" + str(tag_word) + ":texts",text_id)
