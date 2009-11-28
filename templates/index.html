@@ -1,13 +1,5 @@
-$def with (entries,next_page,prev_page,user_id)  
-<p><a href="/">Tape Chat</a></p>
-<ul>
-$if user_id < 1:
-  <li><a href="/login">Login</a></li>
-  <li><a href="/user/new">Sign up</a></li>
-$else:  
-  <li><a href="/feed/new">Add new Feed</a></li>
-  <li><a href="/logout">Logout</a></li>
-</ul>
+$def with (entries, next_page, prev_page, user_id)
+$var user_id: $user_id
 <h1>Tags</h1>
 <ul>
 $if entries:

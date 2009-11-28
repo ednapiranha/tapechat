@@ -1,4 +1,5 @@
 $def with (page)  
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
@@ -12,6 +13,15 @@ $def with (page)
 </head>
 
 <body>
+  <p><a href="/">Tape Chat</a></p>
+  <ul>
+  $if int(page.user_id) < 1:
+    <li><a href="/login">Login</a></li>
+    <li><a href="/user/new">Sign up</a></li>
+  $else:  
+    <li><a href="/feed/new">Add feed</a></li>
+    <li><a href="/logout">Logout</a></li>
+  </ul>
   $:page
 </body>
 </html>

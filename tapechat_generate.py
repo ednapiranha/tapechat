@@ -42,6 +42,7 @@ for feed_id in feeds:
     text_id = r.incr("global:nextTextId")
     r.set("text:" + str(text_id), urllib.quote(sanitized_text))  
     r.set("text:" + str(text_id) + ":timestamp",str(time()))
+    r.set("text:" + str(text_id) + ":uid", r.get("fid:" + str(feed_id) + ":uid"))
     for tag_word in set(tag.tag_list()):
       if len(tag_word) > 2:
         if not r.exists("word:" + str(tag_word) + ":tid"): 

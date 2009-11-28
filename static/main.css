@@ -7,6 +7,7 @@ h1 {
 	font-size: 3em;
 	color: #f49b1c;
 	padding: 20px;
+	clear: both;
 }
 
 li {
@@ -21,6 +22,10 @@ li {
 	margin-bottom: 5px;
 	background-color: #eee;
 	font-size: .8em;
+}
+
+div.user_actions {
+	display: block;
 }
 
 ul.messages li {
