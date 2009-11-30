@@ -33,13 +33,13 @@ class index:
       user_id = web.config.session_parameters['user_id']
     except: user_id = 0
       
-    # try:
-    chat_tag = TapeChatTag()  
-    if web.input(page = 'page')['page']:
-      chat_tag.page_value = web.input(page = 'page')['page']
-    chat_tag.generate(user_id=user_id)
-    return render.index(chat_tag.all_entries,chat_tag.next_page,chat_tag.prev_page,user_id)
-    # except: return render.index('',-1,-1,user_id)
+    try:
+      chat_tag = TapeChatTag()  
+      if web.input(page = 'page')['page']:
+        chat_tag.page_value = web.input(page = 'page')['page']
+      chat_tag.generate(user_id=user_id)
+      return render.index(chat_tag.all_entries,chat_tag.next_page,chat_tag.prev_page,user_id)
+    except: return render.index('',-1,-1,user_id)
 
 class tags:
   def GET(self,tag_word):

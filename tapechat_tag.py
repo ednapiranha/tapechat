@@ -37,7 +37,6 @@ class TapeChatTag():
     else:
       tag_list = r.lrange("uid:" + str(web.config.session_parameters['user_id']) + ":tags",self.start_pos,100 * (self.next_page + 1))
 
-    # try:
     for tag_id in tag_list:
       tag_word = r.get("tid:" + str(tag_id) + ":word")
       try:
@@ -49,13 +48,13 @@ class TapeChatTag():
         self.all_entries += '<li><a href="' + tag.link + '/' + tag_word +'" style="font-size: ' + str(font_size) + 'px;">' + urllib.unquote(tag_word) + ' (' + str(tag_count)  +')</a></li>'
       except: 
         pass
-    # except: pass
 
   def tag_text(self,tag_word,user_id):
     self.text_entries = ''
+    tag_word = urllib.quote(str(tag_word))
     try:
       if user_id < 1:
-        for text_id in r.lrange("word:" + str(tag_word) + ":texts",0,100):
+        for text_id in r.lrange("word:" + tag_word + ":texts",0,100):
           self.text_entries += '<li>' + urllib.unquote(r.get("text:" + str(text_id))) + '</li>'
       else:
         for text_id in r.lrange("uid:" + str(web.config.session_parameters['user_id']) + ":" + tag_word + ":texts",0,100):
