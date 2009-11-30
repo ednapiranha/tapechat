@@ -15,9 +15,6 @@ r = Redis()
 text_unique = []
 
 feeds = [r.get("global:feeds")]
-
-quotes = re.compile('(&#8220;)|(&#8221;)')
-squote = re.compile('(&#8217;)')
 clean_word = re.compile('[\[\],().:"\'?!*+={}`~\r\n\t]')
 p_tags = re.compile('(<p>)|(</p>)')
 
@@ -34,19 +31,22 @@ for feed_id in feeds:
   text_unique = set(text_unique)
   
   for entry in text_unique:
-    clean_text = BeautifulSoup((squote.sub('\'',quotes.sub('"',entry))))
+    clean_text = BeautifulSoup(entry)
     for t in clean_text.findAll(True):
       if t.name not in VALID_TAGS: t.hidden = True
     tag.text = p_tags.sub(' ',clean_text.renderContents())
-    sanitized_text = tag.generate()
+    sanitized_text = urllib.quote(tag.generate())
     text_id = r.incr("global:nextTextId")
-    r.set("text:" + str(text_id), urllib.quote(sanitized_text))  
+    r.set("text:" + str(text_id), sanitized_text)  
     r.set("text:" + str(text_id) + ":timestamp",str(time()))
     r.set("text:" + str(text_id) + ":uid", r.get("fid:" + str(feed_id) + ":uid"))
     for tag_word in set(tag.tag_list()):
       if len(tag_word) > 2:
-        if not r.exists("word:" + str(tag_word) + ":tid"): 
+        tag_word = urllib.quote(str(tag_word))
+        if not r.exists("word:" + tag_word + ":tid"): 
           tapechat_tag.add(tag_word,feed_id)
+        r.incr("word:" + tag_word + ":count")
+        r.incr("uid:" + str(r.get("fid:" + str(feed_id) + ":uid")) + ":" + tag_word + ":count")
         r.push("uid:" + str(r.get("fid:" + str(feed_id) + ":uid")) + ":" + tag_word + ":texts",text_id)
-        r.push("word:" + str(tag_word) + ":texts",text_id)
+        r.push("word:" + tag_word + ":texts",text_id)
 r.save()
