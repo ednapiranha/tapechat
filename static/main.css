@@ -3,6 +3,22 @@ body {
 	font-family: Helvetica, Arial, sans-serif;
 }
 
+body#stream ul#tag_stream li {
+	margin: 10px;
+	background-color: #fff;
+}
+
+body#stream ul#tag_stream li a {
+	border-bottom: none;
+	color: #111;
+	font-size: 2.5em;
+}
+
+body#stream ul#tag_stream li a:hover {
+	background-color: #111;
+	color: #eee;
+}
+
 h1 {
 	font-size: 3em;
 	color: #f49b1c;
@@ -19,7 +35,6 @@ li {
 	word-spacing: .2em;
 	line-height: 1.5em;
 	padding: .5em;
-	margin-bottom: 5px;
 	background-color: #eee;
 	font-size: .8em;
 }
@@ -50,5 +65,9 @@ a:hover {
 }
 
 p#more_tags {
+	clear: both;
+}
+
+div.tags {
 	clear: both;
 }

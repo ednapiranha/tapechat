@@ -19,7 +19,7 @@ class TapeChatTag():
     self.prev_page = 0
     self.page_value = 0
     self.start_pos = 0
-    self.text_entries = ''
+    self.text_entries = ''  
     
   def generate(self,user_id):
     if self.next_page < 0: self.next_page = 0
@@ -48,6 +48,17 @@ class TapeChatTag():
         self.all_entries += '<li><a href="' + tag.link + '/' + tag_word +'" style="font-size: ' + str(font_size) + 'px;">' + urllib.unquote(tag_word) + ' (' + str(tag_count)  +')</a></li>'
       except: 
         pass
+        
+  def generate_stream(self,tag_counter):
+    self.all_entries = ''
+    tag_id = r.lindex("global:tags",int(tag_counter))
+    try:
+      tag_word = r.get("tid:" + str(tag_id) + ":word")
+      tag_count = r.get("word:" + str(tag_word) + ":count")
+      self.all_entries += '<li><a href="' + tag.link + '/' + tag_word +'">' + urllib.unquote(tag_word) + '(' + str(tag_count)  +')</a></li>'
+      tag_position += 1
+    except:
+      pass
 
   def tag_text(self,tag_word,user_id):
     self.text_entries = ''
@@ -66,7 +77,7 @@ class TapeChatTag():
     if not r.exists("word:" + str(tag_word) + ":tid"):
       tag_id = r.incr("global:nextTagId")
       user_id = r.get("fid:" + str(feed_id) + ":uid")
-      r.set("tid:" + str(tag_id) + ":word",clean_quotes.sub('',(urllib.quote(clean_word.sub('',tag_word)))))
+      r.set("tid:" + str(tag_id) + ":word",urllib.quote(clean_quotes.sub('',clean_word.sub('',tag_word))))
       r.set("word:" + str(tag_word) + ":tid", tag_id)
       r.push("global:tags",tag_id)
       r.set("uid:" + str(r.get("fid:" + str(feed_id) + ":tid")),tag_id)

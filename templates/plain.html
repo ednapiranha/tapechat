@@ -7,21 +7,14 @@ $def with (page)
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<link rel="stylesheet" type="text/css" href="/static/reset.css" />
   <link rel="stylesheet" type="text/css" href="/static/main.css" />
+  <script type="text/javascript" src="/static/jquery.js"></script>
+  <script type="text/javascript" src="/static/main.js"></script>
 	<title>TapeChat</title>
 
 </head>
 
-<body>
+<body id="stream">
   <p><a href="/">Tape Chat</a></p>
-  <ul>
-  $if int(page.user_id) < 1:
-    <li><a href="/login">Login</a></li>
-    <li><a href="/user/new">Sign up</a></li>
-  $else:  
-    <li><a href="/feed/new">Add feed</a></li>
-    <li><a href="/logout">Logout</a></li>
-  <li><a href="/stream">View Stream</a></li>
-  </ul>
   $:page
 </body>
 </html>

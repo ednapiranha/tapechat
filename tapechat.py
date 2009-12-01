@@ -1,13 +1,14 @@
 import web
 import urllib
 import re
+import simplejson
 from user import User
 from feed import Feed
 from tapechat_tag import TapeChatTag
 
 VALID_TAGS = ['a']
-
-render = web.template.render('templates/')
+render = web.template.render('templates/', base='layout')
+render_plain = web.template.render('templates/', base='plain')
 
 urls = (
   '/','index',
@@ -16,16 +17,18 @@ urls = (
   '/user/new','user_add',
   '/login','login',
   '/logout','logout',
-  '/feed/new','feed_add'
+  '/feed/new','feed_add',
+  '/stream', 'index_stream',
+  '/tag_stream/([0-9]+)', 'tag_stream'
 )
 app = web.application(urls, globals())
 
 def layout_processor(handle):
   result = handle()
-  return render.layout(result)
-
+  return result
+  
 app.add_processor(layout_processor)
-    
+
 # tags
 class index:  
   def GET(self):
@@ -40,6 +43,22 @@ class index:
       chat_tag.generate(user_id=user_id)
       return render.index(chat_tag.all_entries,chat_tag.next_page,chat_tag.prev_page,user_id)
     except: return render.index('',-1,-1,user_id)
+
+class index_stream:
+  def GET(self):
+    try:
+      user_id = web.config.session_parameters['user_id']
+    except: user_id = 0
+    return render_plain.index_stream(user_id)
+
+class tag_stream:
+  def GET(self,tag_counter):
+    try:
+      user_id = web.config.session_parameters['user_id']
+    except: user_id = 0
+    chat_tag = TapeChatTag()
+    chat_tag.generate_stream(tag_counter)
+    return simplejson.dumps(chat_tag.all_entries)
 
 class tags:
   def GET(self,tag_word):
