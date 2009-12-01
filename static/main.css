@@ -6,6 +6,7 @@ body {
 body#stream ul#tag_stream li {
 	margin: 10px;
 	background-color: #fff;
+	width: 30%;
 }
 
 body#stream ul#tag_stream li a {
