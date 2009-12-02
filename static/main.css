@@ -6,13 +6,12 @@ body {
 body#stream ul#tag_stream li {
 	margin: 10px;
 	background-color: #fff;
-	width: 30%;
 }
 
 body#stream ul#tag_stream li a {
 	border-bottom: none;
 	color: #111;
-	font-size: 2.5em;
+	font-size: 2em;
 }
 
 body#stream ul#tag_stream li a:hover {
@@ -71,4 +70,26 @@ p#more_tags {
 
 div.tags {
 	clear: both;
+}
+body#stream ul#tag_stream li {
+	position: relative;
+}
+
+body#stream ul#tag_stream li div.content {
+	position: absolute;
+}
+
+body#stream ul#tag_stream li div.content ul li {
+	position: relative;
+	clear: both;
+	margin-top: -5px;
+	width: 550px;
+	background-color: #ccc;
+	z-index: 5;
+	line-height: 15px;
+	padding-bottom: 10px;
+}
+
+body#stream ul#tag_stream li div.content ul li, body#stream ul#tag_stream li div.content ul li a {
+	font-size: .9em;
 }

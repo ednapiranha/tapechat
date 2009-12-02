@@ -37,8 +37,8 @@ for feed_id in feeds:
     clean_text = BeautifulSoup(entry)
     for t in clean_text.findAll(True):
       if t.name not in VALID_TAGS: t.hidden = True
-    tag.text = p_tags.sub(' ',circle_sym.sub('',dquote.sub('\"',squote.sub('\'',clean_text.renderContents()))))
-    sanitized_text = urllib.quote(tag.generate())
+    tag.text = p_tags.sub(' ',clean_text.renderContents())
+    sanitized_text = tag.generate()
     text_id = r.incr("global:nextTextId")
     r.set("text:" + str(text_id), sanitized_text)  
     r.set("text:" + str(text_id) + ":timestamp",str(time()))
@@ -46,7 +46,7 @@ for feed_id in feeds:
     for tag_word in set(tag.tag_list()):
       tag_word = clean_word.sub('',circle_sym.sub('',dquote.sub('\"',squote.sub('\'',str(tag_word)))))
       if len(tag_word) > 2:
-        tag_word = urllib.quote(str(tag_word))
+        tag_word = urllib.quote(unicode(str(tag_word),'utf-8').encode('utf-8','ignore'))
         if not r.exists("word:" + tag_word + ":tid"): 
           tapechat_tag.add(tag_word,feed_id)
         r.incr("word:" + tag_word + ":count")

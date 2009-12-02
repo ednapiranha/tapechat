@@ -45,7 +45,7 @@ class TapeChatTag():
         else:
           tag_count = r.get("uid:" + str(web.config.session_parameters['user_id']) + ":" + str(tag_word) + ":count")
         font_size = math.log(tag_count * 100, math.e) * 3
-        self.all_entries += '<li><a href="' + tag.link + '/' + tag_word +'" style="font-size: ' + str(font_size) + 'px;">' + urllib.unquote(tag_word) + ' (' + str(tag_count)  +')</a></li>'
+        self.all_entries += '<li class="tag"><a href="' + tag.link + '/' + tag_word +'" style="font-size: ' + str(font_size) + 'px;">' + urllib.unquote(tag_word) + ' (' + str(tag_count)  +')</a></li>'
       except: 
         pass
         
@@ -54,22 +54,20 @@ class TapeChatTag():
     tag_id = r.lindex("global:tags",int(tag_counter))
     try:
       tag_word = r.get("tid:" + str(tag_id) + ":word")
-      tag_count = r.get("word:" + str(tag_word) + ":count")
-      self.all_entries += '<li><a href="' + tag.link + '/' + tag_word +'">' + urllib.unquote(tag_word) + '(' + str(tag_count)  +')</a></li>'
-      tag_position += 1
+      tag_count = r.get("word:" + urllib.unquote(tag_word) + ":count")
+      self.all_entries += '<li><a href="' + tag.link + '/' + tag_word +'">' + urllib.unquote(urllib.unquote(tag_word)) + '(' + str(tag_count)  +')</a> <div class="content"><ul>' + self.tag_text(urllib.unquote(tag_word),0) + '</ul></div></li>'
     except:
       pass
 
   def tag_text(self,tag_word,user_id):
     self.text_entries = ''
-    tag_word = urllib.quote(str(tag_word))
     try:
       if user_id < 1:
         for text_id in r.lrange("word:" + tag_word + ":texts",0,100):
           self.text_entries += '<li>' + urllib.unquote(r.get("text:" + str(text_id))) + '</li>'
       else:
         for text_id in r.lrange("uid:" + str(web.config.session_parameters['user_id']) + ":" + tag_word + ":texts",0,100):
-          self.text_entries += '<li>' + urllib.unquote(r.get("text:" + str(text_id))) + ' <a href="/delete/' + tag_word + '/' + str(text_id) + '">delete</a></li>'
+          self.text_entries += '<li>' + urllib.unquote(unicode(r.get("text:" + str(text_id)),'utf-8')) + ' <a href="/delete/' + tag_word + '/' + str(text_id) + '">delete</a></li>'
     except: self.text_entries = '<li>No such tag found</li>'
     return self.text_entries
 
