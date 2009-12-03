@@ -63,14 +63,14 @@ class TapeChatTag():
   def tag_text(self,tag_word,user_id):
     self.text_entries = ''
     tag_word = urllib.quote(tag_word.encode('utf-8','ignore'))
-    try:
-      if user_id < 1:
-        for text_id in r.lrange("word:" + tag_word + ":texts",0,record_max_length):
-          self.text_entries += '<li>' + r.get("text:" + str(text_id)) + '</li>'
-      else:
-        for text_id in r.lrange("uid:" + str(web.config.session_parameters['user_id']) + ":" + tag_word + ":texts",0,100):
-          self.text_entries += '<li>' + r.get("text:" + str(text_id)) + ' <a href="/delete/' + tag_word + '/' + str(text_id) + '">delete</a></li>'
-    except: self.text_entries = '<li>No such tag found</li>'
+    # try:
+    if user_id < 1:
+      for text_id in r.lrange("word:" + tag_word + ":texts",0,record_max_length):
+        self.text_entries += '<li>' + r.get("text:" + str(text_id)) + '</li>'
+    else:
+      for text_id in r.lrange("uid:" + str(web.config.session_parameters['user_id']) + ":" + tag_word + ":texts",0,record_max_length):
+        self.text_entries += '<li>' + r.get("text:" + str(text_id)) + '</li>'
+    # except: self.text_entries = '<li>No such tag found</li>'
     return self.text_entries
 
   def add(self,tag_word,feed_id):
@@ -84,15 +84,6 @@ class TapeChatTag():
     if not r.exists("uid:" + str(r.get("fid:" + str(feed_id) + ":uid")) + ":tid"):
       r.push("uid:" + str(r.get("fid:" + str(feed_id) + ":uid")) + ":tags",tag_id)
     r.save()
-
-  def delete_text(self,tag_word,text_id):
-    if web.config.session_parameters['user_id'] and r.get("text:" + str(text_id) + ":uid") == web.config.session_parameters['user_id']:
-      r.delete("text:" + str(text_id))
-      r.lrem("word:" + str(tag_word) + ":texts",text_id)
-      r.decr("word:" + str(tag_word) + ":count")
-      r.decr("uid:" + str(web.config.session_parameters['user_id']) + ":" + str(tag_word) + ":count")
-      r.lrem("uid:" + str(web.config.session_parameters['user_id']) + ":" + str(tag_word) + ":texts",text_id)
-      r.save()
 
   def _format_time(self,time):
     if int(time) < 10:

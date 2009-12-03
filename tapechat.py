@@ -13,7 +13,6 @@ render_plain = web.template.render('templates/', base='plain')
 urls = (
   '/','index',
   '/tags/(.*)','tags',
-  '/delete/(.*)/([0-9]+)','delete',
   '/user/new','user_add',
   '/login','login',
   '/logout','logout',
@@ -67,14 +66,6 @@ class tags:
       user_id = web.config.session_parameters['user_id']
     except: user_id = 0
     return render.tags(chat_tag.tag_text(tag_word,user_id),urllib.unquote(tag_word),user_id)
-
-class delete:
-  def GET(self,tag_word,text_id):
-    try:
-      chat_tag = TapeChatTag()
-      chat_tag.delete_text(tag_word,text_id)
-      raise web.seeother('/tags/' + tag_word)
-    except: raise web.seeother('/')
 
 # feeds
 class feed_add:

@@ -3,9 +3,12 @@ body {
 	font-family: Helvetica, Arial, sans-serif;
 }
 
+body#stream {
+	background-color: #111;
+}
+
 body#stream ul#tag_stream li {
 	margin: 10px;
-	background-color: #fff;
 }
 
 body#stream ul#tag_stream li a {
@@ -86,8 +89,11 @@ div.tags {
 }
 body#stream ul#tag_stream li.tags {
 	position: relative;
-	padding: 5px;
-	margin: 5px;
+	padding: 10px;
+	margin: 2px;
+	width: 28%;
+	background-color: #222;
+	color: #eee;
 }
 
 body#stream ul#tag_stream li.tags div.content {
@@ -101,18 +107,27 @@ body#stream ul#tag_stream li.tags div.content ul {
 body#stream ul#tag_stream li.tags div.content ul li {
 	position: relative;
 	clear: both;
-	margin-top: 0px;
+	margin: 0px;
 	background-color: #eee;
-	width: 500px;
 	z-index: 5;
 	line-height: 15px;
-	padding-bottom: 10px;
+	padding-bottom: 20px;
+	border-bottom: 3px dashed #ccc;
+	color: #111;
+	
+}
+
+body#stream ul#tag_stream li.tags:hover, body#stream ul#tag_stream li.tags.highlight {
+	background-color: #eee;
 	color: #111;
 }
 
-body#stream ul#tag_stream li.tags:hover {
-	background-color: #222;
+body#stream p.header_link a {
 	color: #eee;
+}
+
+body#stream p.header_link a:hover {
+	color: #111;
 }
 
 body#stream ul#tag_stream li.tags span, li.close {
@@ -124,8 +139,11 @@ li.close {
 	color: #111;	
 	font-size: 20px !important;
 	font-weight: bold;
+	width: 380px;
+	border-bottom: 0px !important;
+	padding-bottom: 8px !important;
 }
 
-body#stream ul#tag_stream li.tags div.content ul li, body#stream ul#tag_stream li div.content ul li a {
+body#stream ul#tag_stream li.tags div.content ul li, body#stream ul#tag_stream li.tags div.content ul li a {
 	font-size: .95em;
 }

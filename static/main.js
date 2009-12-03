@@ -13,7 +13,7 @@ function getTag() {
 					$('ul#tag_stream').prepend($(data));
 					$('ul#tag_stream li div.content ul li').hide();
 					setTimeout(getTag, timeout);
-					if($("ul#tag_stream > li").length > 30) {
+					if($("ul#tag_stream > li").length > 29) {
 						$("ul#tag_stream > li:last-child").fadeOut(function(){
 							$("ul#tag_stream > li:last-child").remove();
 						});
@@ -48,6 +48,7 @@ $(function() {
 	});
 	
 	$("ul#tag_stream li span").live("click",function(){
+		releaseDelay();
 		holdDelay = true;
 		setDelay();
 		$(this).parent().find('ul li').fadeIn('fast');
