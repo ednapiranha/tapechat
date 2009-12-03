@@ -21,7 +21,7 @@ body#stream ul#tag_stream li a:hover {
 
 h1 {
 	font-size: 3em;
-	color: #f49b1c;
+	color: #ccc;
 	padding: 20px;
 	clear: both;
 }
@@ -33,10 +33,19 @@ li {
 	margin: 5px;
 	letter-spacing: .06em;
 	word-spacing: .2em;
-	line-height: 1.5em;
+	line-height: 1.6em;
 	padding: .5em;
-	background-color: #eee;
 	font-size: .8em;
+}
+
+a.highlight {
+	background-color: #eee;
+	font-size: 1.7em;
+	color: #333;
+}
+
+a.highlight:hover {
+	
 }
 
 div.user_actions {
@@ -45,6 +54,8 @@ div.user_actions {
 
 ul.messages li {
 	clear: both;
+	border-bottom: 3px dashed #eee;
+	margin-top: 15px;
 }
 
 li span {
@@ -70,26 +81,51 @@ p#more_tags {
 
 div.tags {
 	clear: both;
+	width: 800px;
+	margin-top: 10px;
 }
-body#stream ul#tag_stream li {
+body#stream ul#tag_stream li.tags {
 	position: relative;
+	padding: 5px;
+	margin: 5px;
 }
 
-body#stream ul#tag_stream li div.content {
+body#stream ul#tag_stream li.tags div.content {
 	position: absolute;
 }
 
-body#stream ul#tag_stream li div.content ul li {
+body#stream ul#tag_stream li.tags div.content ul {
+	margin-top: 10px;
+}
+
+body#stream ul#tag_stream li.tags div.content ul li {
 	position: relative;
 	clear: both;
-	margin-top: -5px;
-	width: 550px;
-	background-color: #ccc;
+	margin-top: 0px;
+	background-color: #eee;
+	width: 500px;
 	z-index: 5;
 	line-height: 15px;
 	padding-bottom: 10px;
+	color: #111;
 }
 
-body#stream ul#tag_stream li div.content ul li, body#stream ul#tag_stream li div.content ul li a {
-	font-size: .9em;
+body#stream ul#tag_stream li.tags:hover {
+	background-color: #222;
+	color: #eee;
+}
+
+body#stream ul#tag_stream li.tags span, li.close {
+	font-size: 2em;
+	cursor: pointer;
+}
+
+li.close { 
+	color: #111;	
+	font-size: 20px !important;
+	font-weight: bold;
+}
+
+body#stream ul#tag_stream li.tags div.content ul li, body#stream ul#tag_stream li div.content ul li a {
+	font-size: .95em;
 }

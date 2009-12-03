@@ -2,6 +2,7 @@ var tag_counter = 1;
 var selected_tag = false;
 var delayedTagCall = null;
 var timeout = 1200;
+var holdDelay = false;
 
 function getTag() {
 	try {
@@ -23,20 +24,43 @@ function getTag() {
 	} catch(err) { }
 }
 
+function setDelay() {
+	if(delayedTagCall!=null){
+		clearInterval(delayedTagCall);
+		delayedTagCall = null;
+	}
+	selected_tag = true;
+}
+
+function releaseDelay() {
+	selected_tag = false;
+	$("ul#tag_stream li ul li").fadeOut('fast');
+	delayedTagCall = setTimeout(getTag,timeout);
+}
+
 $(function() {
 	getTag();
-	$("ul#tag_stream li a").live("mouseover",function(){
-		if(delayedTagCall!=null){
-			clearInterval(delayedTagCall);
-			delayedTagCall = null;
+	$("ul#tag_stream li span").live("mouseover",function(){
+		if(!holdDelay) {
+			setDelay();
+			$(this).parent().find('ul li').fadeIn('fast');
 		}
-		selected_tag = true;
+	});
+	
+	$("ul#tag_stream li span").live("click",function(){
+		holdDelay = true;
+		setDelay();
 		$(this).parent().find('ul li').fadeIn('fast');
 	});
 
-	$("ul#tag_stream li a").live("mouseout",function(){
-		selected_tag = false;
-		$("ul#tag_stream li ul li").fadeOut('fast');
-		delayedTagCall = setTimeout(getTag,timeout);
+	$("ul#tag_stream li span").live("mouseout",function(){
+		if(!holdDelay) {
+			releaseDelay();
+		}
+	});
+	
+	$("ul#tag_stream li ul li.close").live("click",function(){
+		holdDelay = false;
+		releaseDelay();
 	});
 });

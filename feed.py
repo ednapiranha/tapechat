@@ -13,7 +13,7 @@ class Feed():
       feed_id = r.incr("global:nextFeedId")
       r.set("fid:" + str(feed_id) + ":url",url)
       r.set("url:" + url + ":fid",feed_id)
-      r.set("global:feeds",feed_id)
+      r.push("global:feeds",feed_id)
       r.set("uid:" + str(web.config.session_parameters['user_id']) + ":feeds",feed_id)
       r.set("fid:" + str(feed_id) + ":uid",web.config.session_parameters['user_id'])
     return True

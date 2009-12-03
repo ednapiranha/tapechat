@@ -14,23 +14,20 @@ tapechat_tag = TapeChatTag()
 r = Redis()
 text_unique = []
 
-feeds = [r.get("global:feeds")]
-clean_word = re.compile('[\[\],().:"\'?!*+={}`~\r\n\t]')
-squote = re.compile('(&#8217;)')
-dquote = re.compile('(&#8220;)|(&#8221;)')
-circle_sym = re.compile('(&#8226;)')
+feeds = r.sort("global:feeds",desc=True)
+clean_word = re.compile('[\[\],().:;"\'?!*+={}`~\r\n\t]')
+circle_sym = re.compile('(&#8226;)|(\\xe2\\x80\\xa2)')
 p_tags = re.compile('(<p>)|(</p>)')
 
 for feed_id in feeds:
   feed = r.get("fid:" + str(feed_id) + ":url")
   rss = feedparser.parse(feed)
-  rss_value = []
   for entry in rss.entries:
-    rss_value.append(entry.summary_detail.value)
-  
-  for entry in set(rss_value):
-    text_unique.append(entry)
-  
+    try:
+      text_unique.append(entry.summary_detail.value)
+    except:
+      pass
+        
   text_unique = set(text_unique)
   
   for entry in text_unique:
@@ -43,13 +40,14 @@ for feed_id in feeds:
     r.set("text:" + str(text_id), sanitized_text)  
     r.set("text:" + str(text_id) + ":timestamp",str(time()))
     r.set("text:" + str(text_id) + ":uid", r.get("fid:" + str(feed_id) + ":uid"))
-    for tag_word in set(tag.tag_list()):
-      tag_word = clean_word.sub('',circle_sym.sub('',dquote.sub('\"',squote.sub('\'',str(tag_word)))))
-      if len(tag_word) > 2:
-        tag_word = urllib.quote(unicode(str(tag_word),'utf-8').encode('utf-8','ignore'))
+    for tag_word in set(tag.tag_list(False)):
+      tag_word = clean_word.sub('',circle_sym.sub('',str(tag_word)))
+      if len(urllib.unquote(tag_word)) > 2:
+        tag_word = str(tag_word)
         if not r.exists("word:" + tag_word + ":tid"): 
           tapechat_tag.add(tag_word,feed_id)
         r.incr("word:" + tag_word + ":count")
+        r.incr("tid:" + str(r.get("word:" + tag_word + ":tid")) + ":count")
         r.incr("uid:" + str(r.get("fid:" + str(feed_id) + ":uid")) + ":" + tag_word + ":count")
         r.push("uid:" + str(r.get("fid:" + str(feed_id) + ":uid")) + ":" + tag_word + ":texts",text_id)
         r.push("word:" + tag_word + ":texts",text_id)

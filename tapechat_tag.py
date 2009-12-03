@@ -11,6 +11,7 @@ tag.link = '/tags'
 clean_word = re.compile('[\[\],().:"\'?!*<>/\+={}`~\n\r\t]')
 clean_quotes = re.compile('(%27)')
 r = Redis()
+record_max_length = 50
 
 class TapeChatTag():
   def __init__(self):
@@ -28,14 +29,14 @@ class TapeChatTag():
      
     try:
       self.next_page = int(self.page_value) + 1
-      self.start_pos = (self.next_page - 1) * 100 + 1
+      self.start_pos = (self.next_page - 1) * record_max_length + 1
       self.prev_page = self.next_page - 2
     except: pass
     
     if user_id < 1:
-      tag_list = r.lrange("global:tags",self.start_pos,100 * (self.next_page + 1))
+      tag_list = r.sort("global:tags",by="tid:*:count",desc=True,start=self.start_pos,num=record_max_length * (self.next_page + 1))
     else:
-      tag_list = r.lrange("uid:" + str(web.config.session_parameters['user_id']) + ":tags",self.start_pos,100 * (self.next_page + 1))
+      tag_list = r.sort("uid:" + str(web.config.session_parameters['user_id']) + ":tags",by="tid:*:count",desc=True,start=self.start_pos,num=100 * (self.next_page + 1))
 
     for tag_id in tag_list:
       tag_word = r.get("tid:" + str(tag_id) + ":word")
@@ -45,7 +46,7 @@ class TapeChatTag():
         else:
           tag_count = r.get("uid:" + str(web.config.session_parameters['user_id']) + ":" + str(tag_word) + ":count")
         font_size = math.log(tag_count * 100, math.e) * 3
-        self.all_entries += '<li class="tag"><a href="' + tag.link + '/' + tag_word +'" style="font-size: ' + str(font_size) + 'px;">' + urllib.unquote(tag_word) + ' (' + str(tag_count)  +')</a></li>'
+        self.all_entries += '<li class="tag"><a href="' + tag.link + '/' + tag_word +'" class="highlight" style="font-size: ' + str(font_size) + 'px;">' + urllib.unquote(tag_word) + ' (' + str(tag_count)  +')</a></li>'
       except: 
         pass
         
@@ -53,9 +54,9 @@ class TapeChatTag():
     self.all_entries = ''
     tag_id = r.lindex("global:tags",int(tag_counter))
     try:
-      tag_word = r.get("tid:" + str(tag_id) + ":word")
+      tag_word = r.get("tid:" + str(tag_id) + ":word").encode('utf-8','ignore')
       tag_count = r.get("word:" + urllib.unquote(tag_word) + ":count")
-      self.all_entries += '<li><a href="' + tag.link + '/' + tag_word +'">' + urllib.unquote(urllib.unquote(tag_word)) + '(' + str(tag_count)  +')</a> <div class="content"><ul>' + self.tag_text(urllib.unquote(tag_word),0) + '</ul></div></li>'
+      self.all_entries += '<li class="tags"><span>' + urllib.unquote(urllib.unquote(tag_word)) + '(' + str(tag_count)  +')</span> <div class="content"><ul>' + self.tag_text(urllib.unquote(tag_word),0) + '<li class="close">close</li></ul></div></li>'
     except:
       pass
 
@@ -63,11 +64,11 @@ class TapeChatTag():
     self.text_entries = ''
     try:
       if user_id < 1:
-        for text_id in r.lrange("word:" + tag_word + ":texts",0,100):
-          self.text_entries += '<li>' + urllib.unquote(r.get("text:" + str(text_id))) + '</li>'
+        for text_id in r.lrange("word:" + tag_word + ":texts",0,record_max_length):
+          self.text_entries += '<li>' + r.get("text:" + str(text_id)) + '</li>'
       else:
         for text_id in r.lrange("uid:" + str(web.config.session_parameters['user_id']) + ":" + tag_word + ":texts",0,100):
-          self.text_entries += '<li>' + urllib.unquote(unicode(r.get("text:" + str(text_id)),'utf-8')) + ' <a href="/delete/' + tag_word + '/' + str(text_id) + '">delete</a></li>'
+          self.text_entries += '<li>' + r.get("text:" + str(text_id)) + ' <a href="/delete/' + tag_word + '/' + str(text_id) + '">delete</a></li>'
     except: self.text_entries = '<li>No such tag found</li>'
     return self.text_entries
 
