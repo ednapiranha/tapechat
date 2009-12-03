@@ -40,10 +40,10 @@ for feed_id in feeds:
     r.set("text:" + str(text_id), sanitized_text)  
     r.set("text:" + str(text_id) + ":timestamp",str(time()))
     r.set("text:" + str(text_id) + ":uid", r.get("fid:" + str(feed_id) + ":uid"))
-    for tag_word in set(tag.tag_list(False)):
+    for tag_word in set(tag.tag_list()):
       tag_word = clean_word.sub('',circle_sym.sub('',str(tag_word)))
       if len(urllib.unquote(tag_word)) > 2:
-        tag_word = str(tag_word)
+        tag_word = urllib.quote(str(tag_word))
         if not r.exists("word:" + tag_word + ":tid"): 
           tapechat_tag.add(tag_word,feed_id)
         r.incr("word:" + tag_word + ":count")

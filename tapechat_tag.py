@@ -62,6 +62,7 @@ class TapeChatTag():
 
   def tag_text(self,tag_word,user_id):
     self.text_entries = ''
+    tag_word = urllib.quote(tag_word.encode('utf-8','ignore'))
     try:
       if user_id < 1:
         for text_id in r.lrange("word:" + tag_word + ":texts",0,record_max_length):
