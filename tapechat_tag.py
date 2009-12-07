@@ -66,10 +66,10 @@ class TapeChatTag():
     # try:
     if user_id < 1:
       for text_id in r.lrange("word:" + tag_word + ":texts",0,record_max_length):
-        self.text_entries += '<li>' + r.get("text:" + str(text_id)) + '</li>'
+        self.text_entries += '<li><em>' + self._format_date(r.get("text:" + str(text_id) + ":timestamp")) + '</em> ' + r.get("text:" + str(text_id)) + '</li>'
     else:
       for text_id in r.lrange("uid:" + str(web.config.session_parameters['user_id']) + ":" + tag_word + ":texts",0,record_max_length):
-        self.text_entries += '<li>' + r.get("text:" + str(text_id)) + '</li>'
+        self.text_entries += '<li><em>' + self._format_date(r.get("text:" + str(text_id) + ":timestamp")) + '</em> ' + r.get("text:" + str(text_id)) + '</li>'
     # except: self.text_entries = '<li>No such tag found</li>'
     return self.text_entries
 

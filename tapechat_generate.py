@@ -15,7 +15,7 @@ r = Redis()
 text_unique = []
 
 feeds = r.sort("global:feeds",desc=True)
-clean_word = re.compile('[\[\],().:;"\'?!*+={}`~\r\n\t]')
+clean_word = re.compile('[\[\],().:;"\'?!*+={}`~\r\n\s\t]')
 circle_sym = re.compile('(&#8226;)|(\\xe2\\x80\\xa2)')
 p_tags = re.compile('(<p>)|(</p>)')
 
