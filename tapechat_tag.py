@@ -66,10 +66,10 @@ class TapeChatTag():
     # try:
     if user_id < 1:
       for text_id in r.lrange("word:" + tag_word + ":texts",0,record_max_length):
-        self.text_entries += '<li><em>' + self._format_date(r.get("text:" + str(text_id) + ":timestamp")) + '</em> ' + r.get("text:" + str(text_id)) + '</li>'
+        self.text_entries += '<li><em>' + self.__format_date(r.get("text:" + str(text_id) + ":timestamp")) + '</em> ' + r.get("text:" + str(text_id)) + '</li>'
     else:
       for text_id in r.lrange("uid:" + str(web.config.session_parameters['user_id']) + ":" + tag_word + ":texts",0,record_max_length):
-        self.text_entries += '<li><em>' + self._format_date(r.get("text:" + str(text_id) + ":timestamp")) + '</em> ' + r.get("text:" + str(text_id)) + '</li>'
+        self.text_entries += '<li><em>' + self.__format_date(r.get("text:" + str(text_id) + ":timestamp")) + '</em> ' + r.get("text:" + str(text_id)) + '</li>'
     # except: self.text_entries = '<li>No such tag found</li>'
     return self.text_entries
 
@@ -85,11 +85,11 @@ class TapeChatTag():
       r.push("uid:" + str(r.get("fid:" + str(feed_id) + ":uid")) + ":tags",tag_id)
     r.save()
 
-  def _format_time(self,time):
+  def __format_time(self,time):
     if int(time) < 10:
       return '0' + str(time)
     return str(time)
 
-  def _format_date(self,text):
+  def __format_date(self,text):
     date = datetime.utcfromtimestamp(float(text))
-    return '<span>' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + ' ' + self._format_time(date.hour) + ':' + self._format_time(date.minute) + ' </span> '
+    return '<span>' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + ' ' + self.__format_time(date.hour) + ':' + self._format_time(date.minute) + ' </span> '
