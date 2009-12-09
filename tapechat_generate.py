@@ -1,9 +1,5 @@
 import feedparser
-import re
-import urllib
-from redis import Redis
 from BeautifulSoup import BeautifulSoup
-from auto_tagify import AutoTagify
 from tapechat_tag import TapeChatTag
 from time import time
 
