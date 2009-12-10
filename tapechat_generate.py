@@ -1,5 +1,9 @@
 import feedparser
+import re
+import urllib
+from redis import Redis
 from BeautifulSoup import BeautifulSoup
+from auto_tagify import AutoTagify
 from tapechat_tag import TapeChatTag
 from time import time
 
@@ -11,8 +15,7 @@ r = Redis()
 text_unique = []
 
 feeds = r.sort("global:feeds",desc=True)
-clean_word = re.compile('[\[\],().:;"\'?!*+={}`~\r\n\s\t]')
-circle_sym = re.compile('(&#8226;)|(\\xe2\\x80\\xa2)')
+circle_sym = re.compile('(&#8226;)|(\xe2\x80\xa2)')
 p_tags = re.compile('(<p>)|(</p>)')
 
 for feed_id in feeds:
@@ -31,7 +34,7 @@ for feed_id in feeds:
       r.set("text:" + str(text_id) + ":timestamp",str(time()))
       r.set("text:" + str(text_id) + ":uid", r.get("fid:" + str(feed_id) + ":uid"))
       for tag_word in set(tag.tag_list()):
-        tag_word = clean_word.sub('',circle_sym.sub('',str(tag_word)))
+        tag_word = circle_sym.sub('',str(tag_word))
         if len(urllib.unquote(tag_word)) > 2:
           tag_word = urllib.quote(str(tag_word))
           if not r.exists("word:" + tag_word + ":tid"): 

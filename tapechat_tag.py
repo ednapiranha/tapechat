@@ -9,7 +9,7 @@ from auto_tagify import AutoTagify
 tag = AutoTagify()
 tag.link = '/tags'
 clean_word = re.compile('[\[\],().:"\'?!*<>/\+={}`~\n\r\t]')
-clean_quotes = re.compile('(%27)')
+clean_quotes = re.compile('(%27)|()')
 r = Redis()
 record_max_length = 50
 
@@ -63,14 +63,16 @@ class TapeChatTag():
   def tag_text(self,tag_word,user_id):
     self.text_entries = ''
     tag_word = urllib.quote(tag_word.encode('utf-8','ignore'))
-    # try:
-    if user_id < 1:
-      for text_id in r.lrange("word:" + tag_word + ":texts",0,record_max_length):
-        self.text_entries += '<li><em>' + self.__format_date(r.get("text:" + str(text_id) + ":timestamp")) + '</em> ' + r.get("text:" + str(text_id)) + '</li>'
-    else:
-      for text_id in r.lrange("uid:" + str(web.config.session_parameters['user_id']) + ":" + tag_word + ":texts",0,record_max_length):
-        self.text_entries += '<li><em>' + self.__format_date(r.get("text:" + str(text_id) + ":timestamp")) + '</em> ' + r.get("text:" + str(text_id)) + '</li>'
-    # except: self.text_entries = '<li>No such tag found</li>'
+    try:
+      if user_id < 1:
+        for text_id in r.lrange("word:" + tag_word + ":texts",0,record_max_length):
+          self.text_entries += '<li><em>' + self.__format_date(r.get("text:" + str(text_id) + ":timestamp")) + '</em> ' + r.get("text:" + str(text_id)) + '</li>'
+      else:
+        for text_id in r.lrange("uid:" + str(web.config.session_parameters['user_id']) + ":" + tag_word + ":texts",0,record_max_length):
+          self.text_entries += '<li><em>' + self.__format_date(r.get("text:" + str(text_id) + ":timestamp")) + '</em> ' + r.get("text:" + str(text_id)) + '</li>'
+    except: 
+      # self.text_entries = '<li>No such tag found</li>'
+      pass
     return self.text_entries
 
   def add(self,tag_word,feed_id):
@@ -92,4 +94,4 @@ class TapeChatTag():
 
   def __format_date(self,text):
     date = datetime.utcfromtimestamp(float(text))
-    return '<span>' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + ' ' + self.__format_time(date.hour) + ':' + self._format_time(date.minute) + ' </span> '
+    return '<span>' + str(date.year) + '/' + str(date.month) + '/' + str(date.day) + ' ' + self.__format_time(date.hour) + ':' + self.__format_time(date.minute) + ' </span> '

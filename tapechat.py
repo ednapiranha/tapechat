@@ -1,3 +1,6 @@
+import web
+import urllib
+import re
 import simplejson
 from user import User
 from feed import Feed
