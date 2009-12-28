@@ -3,8 +3,8 @@ import site
 import urllib
 import re
 import simplejson
+import web_user_auth
 from web import session
-from web_user_auth import User
 from feed import Feed
 from tapechat_tag import TapeChatTag
 
@@ -95,8 +95,7 @@ class login:
   def POST(self):
     email = web.input(email = 'email')['email']
     password = web.input(password = 'password')['password']
-    user = User()
-    if user.login(email,password):
+    if web_user_auth.login(email,password):
       raise web.seeother('/')
     else:
       error_message = "Invalid email/password" 
@@ -105,7 +104,7 @@ class login:
 class logout:
   def GET(self):
     user = User()
-    user.logout()
+    web_user_auth.logout()
     raise web.seeother('/login')
 
 class user_add:
@@ -116,8 +115,7 @@ class user_add:
   def POST(self):
     email = web.input(email = 'email')['email']
     password = web.input(password = 'password')['password']
-    user = User()
-    if valid_email.match(email.strip()) and len(password) > 4 and user.create(email,password):
+    if valid_email.match(email.strip()) and len(password) > 4 and web_user_auth.create(email,password):
       raise web.seeother('/')
     else:
       error_message = "Invalid email/password" 
