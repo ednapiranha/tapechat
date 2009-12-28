@@ -2,12 +2,9 @@ import web
 from random import choice
 
 chars = string.letters + string.digits
-new_auth = ''
-for i in range(50):
-  new_auth += choice(chars)  
-r.set("auth:" + str(new_auth) + ":uid",uid)
+new_auth = ''.join([str(''.join(str(i) for i in choice(chars))) for i in range(50)])
+
 web.config.session_parameters['secret_key'] = str(new_auth)
-web.config.session_parameters['user_id'] = uid
 web.config.session_parameters['cookie_name'] = "tapechat_session_id"
 web.config.session_parameters['cookie_domain'] = None
 web.config.session_parameters['timeout'] = 86400
