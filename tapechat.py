@@ -1,14 +1,17 @@
 import web
+import site
 import urllib
 import re
 import simplejson
-from user import User
+from web import session
+from web_user_auth import User
 from feed import Feed
 from tapechat_tag import TapeChatTag
 
 VALID_TAGS = ['a']
 render = web.template.render('templates/', base='layout')
 render_plain = web.template.render('templates/', base='plain')
+valid_email = re.compile(r"(?:^|\s)[-a-z0-9_.]+@(?:[-a-z0-9]+\.)+[a-z]{2,6}(?:\s|$)",re.IGNORECASE)
 
 urls = (
   '/','index',
@@ -32,7 +35,7 @@ app.add_processor(layout_processor)
 class index:  
   def GET(self):
     try:
-      user_id = web.config.session_parameters['user_id']
+      user_id = session.user_id
     except: user_id = 0
       
     try:
@@ -46,14 +49,14 @@ class index:
 class index_stream:
   def GET(self):
     try:
-      user_id = web.config.session_parameters['user_id']
+      user_id = session.user_id
     except: user_id = 0
     return render_plain.index_stream(user_id)
 
 class tag_stream:
   def GET(self,tag_counter):
     try:
-      user_id = web.config.session_parameters['user_id']
+      user_id = session.user_id
     except: user_id = 0
     chat_tag = TapeChatTag()
     chat_tag.generate_stream(tag_counter)
@@ -63,14 +66,14 @@ class tags:
   def GET(self,tag_word):
     chat_tag = TapeChatTag()
     try:
-      user_id = web.config.session_parameters['user_id']
+      user_id = session.user_id
     except: user_id = 0
     return render.tags(chat_tag.tag_text(tag_word,user_id),urllib.unquote(tag_word),user_id)
 
 # feeds
 class feed_add:
   def GET(self):
-    user_id = web.config.session_parameters['user_id']
+    user_id = session.user_id
     error_message = None
     return render.feed_add(error_message,user_id)
   
@@ -79,7 +82,7 @@ class feed_add:
     if feed.add(web.input(url = 'url')['url']):
       raise web.seeother('/')
     else:
-      user_id = web.config.session_parameters['user_id']
+      user_id = session.user_id
       error_message = "Invalid feed url"
       render.feed_add(error_message,user_id)
 
@@ -114,7 +117,7 @@ class user_add:
     email = web.input(email = 'email')['email']
     password = web.input(password = 'password')['password']
     user = User()
-    if user.create(email,password):
+    if valid_email.match(email.strip()) and len(password) > 4 and user.create(email,password):
       raise web.seeother('/')
     else:
       error_message = "Invalid email/password" 

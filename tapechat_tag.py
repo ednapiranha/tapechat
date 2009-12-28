@@ -2,6 +2,7 @@ import urllib
 import math
 import re
 import web
+from web import session
 from datetime import datetime
 from redis import Redis
 from auto_tagify import AutoTagify
@@ -13,7 +14,7 @@ clean_quotes = re.compile('(%27)|()')
 r = Redis()
 record_max_length = 50
 
-class TapeChatTag():
+class TapeChatTag(object):
   def __init__(self):
     self.all_entries = ''
     self.next_page = 1
@@ -36,7 +37,7 @@ class TapeChatTag():
     if user_id < 1:
       tag_list = r.sort("global:tags",by="tid:*:count",desc=True,start=self.start_pos,num=record_max_length * (self.next_page + 1))
     else:
-      tag_list = r.sort("uid:" + str(web.config.session_parameters['user_id']) + ":tags",by="tid:*:count",desc=True,start=self.start_pos,num=100 * (self.next_page + 1))
+      tag_list = r.sort("uid:" + str(session.user_id) + ":tags",by="tid:*:count",desc=True,start=self.start_pos,num=100 * (self.next_page + 1))
 
     for tag_id in tag_list:
       tag_word = r.get("tid:" + str(tag_id) + ":word")
@@ -44,7 +45,7 @@ class TapeChatTag():
         if user_id < 1:
           tag_count = r.get("word:" + str(tag_word) + ":count")
         else:
-          tag_count = r.get("uid:" + str(web.config.session_parameters['user_id']) + ":" + str(tag_word) + ":count")
+          tag_count = r.get("uid:" + str(session.user_id) + ":" + str(tag_word) + ":count")
         font_size = math.log(tag_count * 100, math.e) * 3
         self.all_entries += '<li class="tag"><a href="' + tag.link + '/' + tag_word +'" class="highlight" style="font-size: ' + str(font_size) + 'px;">' + urllib.unquote(tag_word) + ' (' + str(tag_count)  +')</a></li>'
       except: 
@@ -68,7 +69,7 @@ class TapeChatTag():
         for text_id in r.lrange("word:" + tag_word + ":texts",0,record_max_length):
           self.text_entries += '<li><em>' + self.__format_date(r.get("text:" + str(text_id) + ":timestamp")) + '</em> ' + r.get("text:" + str(text_id)) + '</li>'
       else:
-        for text_id in r.lrange("uid:" + str(web.config.session_parameters['user_id']) + ":" + tag_word + ":texts",0,record_max_length):
+        for text_id in r.lrange("uid:" + str(session.user_id) + ":" + tag_word + ":texts",0,record_max_length):
           self.text_entries += '<li><em>' + self.__format_date(r.get("text:" + str(text_id) + ":timestamp")) + '</em> ' + r.get("text:" + str(text_id)) + '</li>'
     except: 
       # self.text_entries = '<li>No such tag found</li>'

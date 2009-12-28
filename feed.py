@@ -6,7 +6,7 @@ from redis import Redis
 clean_url = re.compile('^(feed://)')
 r = Redis()
 
-class Feed():
+class Feed(object):
   def add(self,url):
     url = clean_url.sub("http://",url)
     if not r.exists("url:" + str(url) + ":fid"):
@@ -14,6 +14,6 @@ class Feed():
       r.set("fid:" + str(feed_id) + ":url",url)
       r.set("url:" + url + ":fid",feed_id)
       r.push("global:feeds",feed_id)
-      r.set("uid:" + str(web.config.session_parameters['user_id']) + ":feeds",feed_id)
-      r.set("fid:" + str(feed_id) + ":uid",web.config.session_parameters['user_id'])
+      r.set("uid:" + str(session.user_id) + ":feeds",feed_id)
+      r.set("fid:" + str(feed_id) + ":uid",session.user_id)
     return True
