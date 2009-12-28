@@ -1,6 +1,7 @@
 import urllib
 import re
 import web
+from web import session
 from redis import Redis
 
 clean_url = re.compile('^(feed://)')
