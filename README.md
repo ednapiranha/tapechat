@@ -11,6 +11,7 @@ Tapechat is a small web.py app that takes RSS feeds and tagifies words in each R
 * [auto_tagify](http://pypi.python.org/pypi?:action=display&name=auto_tagify "auto_tagify") (easy_install auto_tagify or pip install auto_tagify)
 * [feedparser](http://http://feedparser.org/ "feedparser")
 * [simplejson] (http://pypi.python.org/pypi/simplejson "simplejson") (easy_install simplejson or pip install simplejson)
+* [web_user_auth](http://github.com/ednapiranha/web_user_auth/blob/master/web_user_auth.py "web_user_auth")
 
 
 ## How to use:
